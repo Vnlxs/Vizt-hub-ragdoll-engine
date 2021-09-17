@@ -1,0 +1,698 @@
+-- Vizt hub GUI made by Vnlxs#8355
+-- Version: 3.1
+
+-- Instances:
+
+local ScreenGui = Instance.new("ScreenGui")
+local Main = Instance.new("Frame")
+local UIGradient = Instance.new("UIGradient")
+local UICorner = Instance.new("UICorner")
+local FLY = Instance.new("TextButton")
+local NOCLIP = Instance.new("TextButton")
+local Vlogo = Instance.new("TextLabel")
+local ViztHubTitle = Instance.new("TextLabel")
+local INVISIBLE = Instance.new("TextButton")
+local ADMINCMDS = Instance.new("TextButton")
+local TELEPORT = Instance.new("TextButton")
+local ANTIRAGDOLL = Instance.new("TextButton")
+local FLINGPUSH = Instance.new("TextButton")
+local SPEEDPOWER = Instance.new("TextButton")
+local JUMPPOWER = Instance.new("TextButton")
+local Soon = Instance.new("Frame")
+
+--Properties:
+
+ScreenGui.Parent = game.CoreGui
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+Main.Name = "Main"
+Main.Parent = ScreenGui
+Main.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Main.BorderColor3 = Color3.fromRGB(27, 42, 53)
+Main.BorderSizePixel = 0
+Main.Position = UDim2.new(0.341079473, 0, 0.309523821, 0)
+Main.Size = UDim2.new(0, 411, 0, 278)
+Main.Active = true
+Main.Draggable = true
+
+UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(38, 35, 35)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(38, 35, 35))}
+UIGradient.Parent = Main
+
+UICorner.CornerRadius = UDim.new(0, 4)
+UICorner.Parent = Main
+
+
+FLY.Name = "FLY"
+FLY.Parent = Main
+FLY.BackgroundColor3 = Color3.fromRGB(141, 141, 141)
+FLY.BackgroundTransparency = 0.950
+FLY.Position = UDim2.new(0.0190930795, 0, 0.126266435, 0)
+FLY.Size = UDim2.new(0, 94, 0, 30)
+FLY.Font = Enum.Font.GothamBold
+FLY.Text = "FLY [X]"
+FLY.TextColor3 = Color3.fromRGB(227, 227, 227)
+FLY.TextSize = 26.000
+FLY.TextStrokeColor3 = Color3.fromRGB(40, 40, 40)
+FLY.TextStrokeTransparency = 0.930
+FLY.MouseButton1Down:connect(function()
+	repeat wait() 
+	until game.Players.LocalPlayer and game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:findFirstChild("Head") and game.Players.LocalPlayer.Character:findFirstChild("Humanoid") 
+	local mouse = game.Players.LocalPlayer:GetMouse() 
+	repeat wait() until mouse
+	local plr = game.Players.LocalPlayer 
+	local torso = plr.Character.Head 
+	local flying = false
+	local deb = true 
+	local ctrl = {f = 0, b = 0, l = 0, r = 0} 
+	local lastctrl = {f = 0, b = 0, l = 0, r = 0} 
+	local maxspeed = 400 
+	local speed = 5000 
+
+	function Fly() 
+		local bg = Instance.new("BodyGyro", torso) 
+		bg.P = 9e4 
+		bg.maxTorque = Vector3.new(9e9, 9e9, 9e9) 
+		bg.cframe = torso.CFrame 
+		local bv = Instance.new("BodyVelocity", torso) 
+		bv.velocity = Vector3.new(0,0.1,0) 
+		bv.maxForce = Vector3.new(9e9, 9e9, 9e9) 
+		repeat wait() 
+			plr.Character.Humanoid.PlatformStand = true 
+			if ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0 then 
+				speed = speed+.5+(speed/maxspeed) 
+				if speed > maxspeed then 
+					speed = maxspeed 
+				end 
+			elseif not (ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0) and speed ~= 0 then 
+				speed = speed-1 
+				if speed < 0 then 
+					speed = 0 
+				end 
+			end 
+			if (ctrl.l + ctrl.r) ~= 0 or (ctrl.f + ctrl.b) ~= 0 then 
+				bv.velocity = ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (ctrl.f+ctrl.b)) + ((game.Workspace.CurrentCamera.CoordinateFrame * CFrame.new(ctrl.l+ctrl.r,(ctrl.f+ctrl.b)*.2,0).p) - game.Workspace.CurrentCamera.CoordinateFrame.p))*speed 
+				lastctrl = {f = ctrl.f, b = ctrl.b, l = ctrl.l, r = ctrl.r} 
+			elseif (ctrl.l + ctrl.r) == 0 and (ctrl.f + ctrl.b) == 0 and speed ~= 0 then 
+				bv.velocity = ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (lastctrl.f+lastctrl.b)) + ((game.Workspace.CurrentCamera.CoordinateFrame * CFrame.new(lastctrl.l+lastctrl.r,(lastctrl.f+lastctrl.b)*.2,0).p) - game.Workspace.CurrentCamera.CoordinateFrame.p))*speed 
+			else 
+				bv.velocity = Vector3.new(0,0.1,0) 
+			end 
+			bg.cframe = game.Workspace.CurrentCamera.CoordinateFrame * CFrame.Angles(-math.rad((ctrl.f+ctrl.b)*50*speed/maxspeed),0,0) 
+		until not flying 
+		ctrl = {f = 0, b = 0, l = 0, r = 0} 
+		lastctrl = {f = 0, b = 0, l = 0, r = 0} 
+		speed = 0 
+		bg:Destroy() 
+		bv:Destroy() 
+		plr.Character.Humanoid.PlatformStand = false 
+	end 
+	mouse.KeyDown:connect(function(key) 
+		if key:lower() == "x" then 
+			if flying then flying = false 
+			else 
+				flying = true 
+				Fly() 
+			end 
+		elseif key:lower() == "w" then 
+			ctrl.f = 1 
+		elseif key:lower() == "s" then 
+			ctrl.b = -1 
+		elseif key:lower() == "a" then 
+			ctrl.l = -1 
+		elseif key:lower() == "d" then 
+			ctrl.r = 1 
+		end 
+	end) 
+	mouse.KeyUp:connect(function(key) 
+		if key:lower() == "w" then 
+			ctrl.f = 0 
+		elseif key:lower() == "s" then 
+			ctrl.b = 0 
+		elseif key:lower() == "a" then 
+			ctrl.l = 0 
+		elseif key:lower() == "d" then 
+			ctrl.r = 0 
+		end 
+	end)
+	Fly()
+end)
+
+NOCLIP.Name = "NOCLIP"
+NOCLIP.Parent = Main
+NOCLIP.BackgroundColor3 = Color3.fromRGB(141, 141, 141)
+NOCLIP.BackgroundTransparency = 0.950
+NOCLIP.Position = UDim2.new(0.0190930795, 0, 0.263450563, 0)
+NOCLIP.Size = UDim2.new(0, 94, 0, 30)
+NOCLIP.Font = Enum.Font.GothamBold
+NOCLIP.Text = "NOCLIP [E]"
+NOCLIP.TextColor3 = Color3.fromRGB(227, 227, 227)
+NOCLIP.TextSize = 17.000
+NOCLIP.TextStrokeColor3 = Color3.fromRGB(40, 40, 40)
+NOCLIP.TextStrokeTransparency = 0.930
+NOCLIP.MouseButton1Down:connect(function()
+	-- Noclip
+	local s = loadstring(game:HttpGet(("https://raw.githubusercontent.com/RobloxScripts52/noclip/main/noclip.lua"), true))()
+	print(s)
+end)
+
+Vlogo.Name = "V logo"
+Vlogo.Parent = Main
+Vlogo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Vlogo.BackgroundTransparency = 1.000
+Vlogo.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Vlogo.BorderSizePixel = 0
+Vlogo.LayoutOrder = -2
+Vlogo.Position = UDim2.new(-0.000555070292, 0, 0, 0)
+Vlogo.Size = UDim2.new(0, 25, 0, 21)
+Vlogo.Font = Enum.Font.SourceSans
+Vlogo.Text = "V"
+Vlogo.TextColor3 = Color3.fromRGB(49, 0, 66)
+Vlogo.TextSize = 30.000
+Vlogo.TextStrokeColor3 = Color3.fromRGB(105, 0, 158)
+Vlogo.TextStrokeTransparency = 0.630
+
+ViztHubTitle.Name = "ViztHubTitle"
+ViztHubTitle.Parent = Main
+ViztHubTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ViztHubTitle.BackgroundTransparency = 0.960
+ViztHubTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ViztHubTitle.BorderSizePixel = 0
+ViztHubTitle.LayoutOrder = -2
+ViztHubTitle.Size = UDim2.new(0, 411, 0, 21)
+ViztHubTitle.Font = Enum.Font.SourceSans
+ViztHubTitle.Text = "V  I  Z  T  H  U  B"
+ViztHubTitle.TextColor3 = Color3.fromRGB(159, 0, 212)
+ViztHubTitle.TextSize = 28.000
+ViztHubTitle.TextStrokeColor3 = Color3.fromRGB(105, 0, 158)
+ViztHubTitle.TextStrokeTransparency = 0.000
+
+INVISIBLE.Name = "INVISIBLE"
+INVISIBLE.Parent = Main
+INVISIBLE.BackgroundColor3 = Color3.fromRGB(141, 141, 141)
+INVISIBLE.BackgroundTransparency = 0.950
+INVISIBLE.Position = UDim2.new(0.0190930795, 0, 0.40373832, 0)
+INVISIBLE.Size = UDim2.new(0, 94, 0, 30)
+INVISIBLE.Font = Enum.Font.GothamBold
+INVISIBLE.Text = "INVISIBLE"
+INVISIBLE.TextColor3 = Color3.fromRGB(227, 227, 227)
+INVISIBLE.TextSize = 17.000
+INVISIBLE.TextStrokeColor3 = Color3.fromRGB(40, 40, 40)
+INVISIBLE.TextStrokeTransparency = 0.930
+INVISIBLE.MouseButton1Down:connect(function()
+	-- Objects
+
+	local GUI = Instance.new("ScreenGui")
+	local Main = Instance.new("Frame")
+	local Topbar = Instance.new("Frame")
+	local Title = Instance.new("TextLabel")
+	local Exit = Instance.new("TextButton")
+	local Minimize = Instance.new("TextButton")
+	local SubFrame = Instance.new("Frame")
+	local AirTP = Instance.new("Frame")
+	local TextLabel = Instance.new("TextLabel")
+	local TextLabel_2 = Instance.new("TextLabel")
+	local BoolToggle = Instance.new("TextButton")
+	local AutoRun = Instance.new("Frame")
+	local TextLabel_3 = Instance.new("TextLabel")
+	local TextLabel_4 = Instance.new("TextLabel")
+	local BoolToggle_2 = Instance.new("TextButton")
+	local Keybind = Instance.new("Frame")
+	local TextLabel_5 = Instance.new("TextLabel")
+	local TextLabel_6 = Instance.new("TextLabel")
+	local CurrentBind = Instance.new("TextBox")
+	local QuickInvis = Instance.new("TextButton")
+	local Rigtype = Instance.new("TextLabel")
+	local TextButton = Instance.new("TextButton")
+
+	-- Properties
+
+	GUI.Name = "GUI"
+	GUI.Parent = game.CoreGui
+
+	Main.Name = "Main"
+	Main.Parent = GUI
+	Main.Active = true
+	Main.BackgroundColor3 = Color3.new(0, 0, 0)
+	Main.BackgroundTransparency = 0.5
+	Main.BorderSizePixel = 0
+	Main.Draggable = true
+	Main.Position = UDim2.new(0.318181813, 0, 0.312252969, 0)
+	Main.Size = UDim2.new(0.363636374, 0, 0.375494063, 0)
+
+	Topbar.Name = "Topbar"
+	Topbar.Parent = Main
+	Topbar.BackgroundColor3 = Color3.new(0, 0, 0)
+	Topbar.BackgroundTransparency = 0.9990000128746
+	Topbar.Size = UDim2.new(1, 0, 0.163157895, 0)
+
+	Title.Name = "Title"
+	Title.Parent = Topbar
+	Title.BackgroundColor3 = Color3.new(0, 0, 0)
+	Title.BackgroundTransparency = 0.9990000128746
+	Title.Size = UDim2.new(0.784722209, 0, 1, 0)
+	Title.Font = Enum.Font.SciFi
+	Title.FontSize = Enum.FontSize.Size14
+	Title.Text = "FE Invisible By Timeless"
+	Title.TextColor3 = Color3.new(1, 1, 1)
+	Title.TextSize = 14
+
+	Exit.Name = "Exit"
+	Exit.Parent = Topbar
+	Exit.BackgroundColor3 = Color3.new(0, 0, 0)
+	Exit.BackgroundTransparency = 0.9990000128746
+	Exit.Position = UDim2.new(0.892361104, 0, 0, 0)
+	Exit.Size = UDim2.new(0.107638888, 0, 1, 0)
+	Exit.Font = Enum.Font.SciFi
+	Exit.FontSize = Enum.FontSize.Size14
+	Exit.Text = "X"
+	Exit.TextColor3 = Color3.new(1, 1, 1)
+	Exit.TextSize = 14
+
+	Minimize.Name = "Minimize"
+	Minimize.Parent = Topbar
+	Minimize.BackgroundColor3 = Color3.new(0, 0, 0)
+	Minimize.BackgroundTransparency = 0.9990000128746
+	Minimize.Position = UDim2.new(0.784722209, 0, 0, 0)
+	Minimize.Size = UDim2.new(0.107638888, 0, 1, 0)
+	Minimize.Font = Enum.Font.SciFi
+	Minimize.FontSize = Enum.FontSize.Size14
+	Minimize.Text = "-"
+	Minimize.TextColor3 = Color3.new(1, 1, 1)
+	Minimize.TextSize = 14
+
+	SubFrame.Name = "SubFrame"
+	SubFrame.Parent = Main
+	SubFrame.BackgroundColor3 = Color3.new(0, 0, 0)
+	SubFrame.BackgroundTransparency = 0.5
+	SubFrame.BorderSizePixel = 0
+	SubFrame.Position = UDim2.new(0, 0, 0.163157895, 0)
+	SubFrame.Size = UDim2.new(1, 0, 0.83684212, 0)
+
+	AirTP.Name = "AirTP"
+	AirTP.Parent = SubFrame
+	AirTP.BackgroundColor3 = Color3.new(0, 0, 0)
+	AirTP.BackgroundTransparency = 0.9990000128746
+	AirTP.BorderSizePixel = 0
+	AirTP.Position = UDim2.new(0, 0, 0.0628930852, 0)
+	AirTP.Size = UDim2.new(1, 0, 0.176100627, 0)
+
+	TextLabel.Parent = AirTP
+	TextLabel.BackgroundColor3 = Color3.new(0, 0, 0)
+	TextLabel.BackgroundTransparency = 0.9990000128746
+	TextLabel.Position = UDim2.new(0.166666672, 0, 0, 0)
+	TextLabel.Size = UDim2.new(0.284722209, 0, 1, 0)
+	TextLabel.Font = Enum.Font.SciFi
+	TextLabel.FontSize = Enum.FontSize.Size14
+	TextLabel.Text = "Air TP"
+	TextLabel.TextColor3 = Color3.new(1, 1, 1)
+	TextLabel.TextSize = 14
+	TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+	TextLabel_2.Parent = AirTP
+	TextLabel_2.BackgroundColor3 = Color3.new(0, 0, 0)
+	TextLabel_2.BackgroundTransparency = 0.9990000128746
+	TextLabel_2.Position = UDim2.new(0.451388896, 0, 0, 0)
+	TextLabel_2.Size = UDim2.new(0.0972222239, 0, 1, 0)
+	TextLabel_2.Font = Enum.Font.SciFi
+	TextLabel_2.FontSize = Enum.FontSize.Size14
+	TextLabel_2.Text = "-"
+	TextLabel_2.TextColor3 = Color3.new(1, 1, 1)
+	TextLabel_2.TextSize = 14
+
+	BoolToggle.Name = "BoolToggle"
+	BoolToggle.Parent = AirTP
+	BoolToggle.BackgroundColor3 = Color3.new(0.207843, 1, 0.392157)
+	BoolToggle.BackgroundTransparency = 0.5
+	BoolToggle.BorderSizePixel = 0
+	BoolToggle.Position = UDim2.new(0.784722209, 0, 0, 0)
+	BoolToggle.Size = UDim2.new(0.215277776, 0, 1, 0)
+	BoolToggle.Font = Enum.Font.SciFi
+	BoolToggle.FontSize = Enum.FontSize.Size14
+	BoolToggle.Text = "true"
+	BoolToggle.TextColor3 = Color3.new(1, 1, 1)
+	BoolToggle.TextSize = 14
+
+	AutoRun.Name = "AutoRun"
+	AutoRun.Parent = SubFrame
+	AutoRun.BackgroundColor3 = Color3.new(0, 0, 0)
+	AutoRun.BackgroundTransparency = 0.9990000128746
+	AutoRun.Position = UDim2.new(0, 0, 0.238993704, 0)
+	AutoRun.Size = UDim2.new(1, 0, 0.176100627, 0)
+
+	TextLabel_3.Parent = AutoRun
+	TextLabel_3.BackgroundColor3 = Color3.new(0, 0, 0)
+	TextLabel_3.BackgroundTransparency = 0.9990000128746
+	TextLabel_3.Position = UDim2.new(0.166666672, 0, 0, 0)
+	TextLabel_3.Size = UDim2.new(0.284722209, 0, 1, 0)
+	TextLabel_3.Font = Enum.Font.SciFi
+	TextLabel_3.FontSize = Enum.FontSize.Size14
+	TextLabel_3.Text = "Auto Run"
+	TextLabel_3.TextColor3 = Color3.new(1, 1, 1)
+	TextLabel_3.TextSize = 14
+	TextLabel_3.TextXAlignment = Enum.TextXAlignment.Left
+
+	TextLabel_4.Parent = AutoRun
+	TextLabel_4.BackgroundColor3 = Color3.new(0, 0, 0)
+	TextLabel_4.BackgroundTransparency = 0.9990000128746
+	TextLabel_4.Position = UDim2.new(0.451388896, 0, 0, 0)
+	TextLabel_4.Size = UDim2.new(0.0972222239, 0, 1, 0)
+	TextLabel_4.Font = Enum.Font.SciFi
+	TextLabel_4.FontSize = Enum.FontSize.Size14
+	TextLabel_4.Text = "-"
+	TextLabel_4.TextColor3 = Color3.new(1, 1, 1)
+	TextLabel_4.TextSize = 14
+
+	BoolToggle_2.Name = "BoolToggle"
+	BoolToggle_2.Parent = AutoRun
+	BoolToggle_2.BackgroundColor3 = Color3.new(0.207843, 1, 0.392157)
+	BoolToggle_2.BackgroundTransparency = 0.5
+	BoolToggle_2.BorderSizePixel = 0
+	BoolToggle_2.Position = UDim2.new(0.784722209, 0, 0, 0)
+	BoolToggle_2.Size = UDim2.new(0.215277776, 0, 1, 0)
+	BoolToggle_2.Font = Enum.Font.SciFi
+	BoolToggle_2.FontSize = Enum.FontSize.Size14
+	BoolToggle_2.Text = "true"
+	BoolToggle_2.TextColor3 = Color3.new(1, 1, 1)
+	BoolToggle_2.TextSize = 14
+
+	Keybind.Name = "Keybind"
+	Keybind.Parent = SubFrame
+	Keybind.BackgroundColor3 = Color3.new(0, 0, 0)
+	Keybind.BackgroundTransparency = 0.9990000128746
+	Keybind.Position = UDim2.new(0, 0, 0.415094346, 0)
+	Keybind.Size = UDim2.new(1, 0, 0.176100627, 0)
+
+	TextLabel_5.Parent = Keybind
+	TextLabel_5.BackgroundColor3 = Color3.new(0, 0, 0)
+	TextLabel_5.BackgroundTransparency = 0.9990000128746
+	TextLabel_5.Position = UDim2.new(0.166666672, 0, 0, 0)
+	TextLabel_5.Size = UDim2.new(0.284722209, 0, 1, 0)
+	TextLabel_5.Font = Enum.Font.SciFi
+	TextLabel_5.FontSize = Enum.FontSize.Size14
+	TextLabel_5.Text = "Keybind"
+	TextLabel_5.TextColor3 = Color3.new(1, 1, 1)
+	TextLabel_5.TextSize = 14
+	TextLabel_5.TextXAlignment = Enum.TextXAlignment.Left
+
+	TextLabel_6.Parent = Keybind
+	TextLabel_6.BackgroundColor3 = Color3.new(0, 0, 0)
+	TextLabel_6.BackgroundTransparency = 0.9990000128746
+	TextLabel_6.Position = UDim2.new(0.451388896, 0, 0, 0)
+	TextLabel_6.Size = UDim2.new(0.0972222239, 0, 1, 0)
+	TextLabel_6.Font = Enum.Font.SciFi
+	TextLabel_6.FontSize = Enum.FontSize.Size14
+	TextLabel_6.Text = "-"
+	TextLabel_6.TextColor3 = Color3.new(1, 1, 1)
+	TextLabel_6.TextSize = 14
+
+	CurrentBind.Name = "CurrentBind"
+	CurrentBind.Parent = Keybind
+	CurrentBind.BackgroundColor3 = Color3.new(0.262745, 0.964706, 1)
+	CurrentBind.BackgroundTransparency = 0.5
+	CurrentBind.BorderSizePixel = 0
+	CurrentBind.Position = UDim2.new(0.784722209, 0, 0, 0)
+	CurrentBind.Size = UDim2.new(0.215277776, 0, 1, 0)
+	CurrentBind.Font = Enum.Font.SciFi
+	CurrentBind.FontSize = Enum.FontSize.Size14
+	CurrentBind.Text = "i"
+	CurrentBind.TextColor3 = Color3.new(1, 1, 1)
+	CurrentBind.TextSize = 14
+
+	QuickInvis.Name = "QuickInvis"
+	QuickInvis.Parent = SubFrame
+	QuickInvis.BackgroundColor3 = Color3.new(1, 0.227451, 0.227451)
+	QuickInvis.BackgroundTransparency = 0.5
+	QuickInvis.BorderSizePixel = 0
+	QuickInvis.Position = UDim2.new(0, 0, 0.823899388, 0)
+	QuickInvis.Size = UDim2.new(1, 0, 0.176100627, 0)
+	QuickInvis.Font = Enum.Font.SciFi
+	QuickInvis.FontSize = Enum.FontSize.Size14
+	QuickInvis.Text = "Go Invisible"
+	QuickInvis.TextColor3 = Color3.new(1, 1, 1)
+	QuickInvis.TextSize = 14
+
+	Rigtype.Name = "Rigtype"
+	Rigtype.Parent = SubFrame
+	Rigtype.BackgroundColor3 = Color3.new(0, 0, 0)
+	Rigtype.BackgroundTransparency = 0.69999998807907
+	Rigtype.BorderSizePixel = 0
+	Rigtype.Position = UDim2.new(0, 0, 0.647798777, 0)
+	Rigtype.Size = UDim2.new(1, 0, 0.176100627, 0)
+	Rigtype.Font = Enum.Font.SciFi
+	Rigtype.FontSize = Enum.FontSize.Size14
+	Rigtype.Text = "Your Rigtype - RigTypeHere"
+	Rigtype.TextColor3 = Color3.new(1, 1, 1)
+	Rigtype.TextSize = 14
+
+	TextButton.Parent = GUI
+	TextButton.BackgroundColor3 = Color3.new(0, 0, 0)
+	TextButton.BackgroundTransparency = 0.5
+	TextButton.BorderSizePixel = 0
+	TextButton.Position = UDim2.new(0.0265151523, 0, 0.865612626, 0)
+	TextButton.Size = UDim2.new(0.0606060624, 0, 0.0948616564, 0)
+	TextButton.Font = Enum.Font.SciFi
+	TextButton.FontSize = Enum.FontSize.Size14
+	TextButton.Text = "Open"
+	TextButton.TextColor3 = Color3.new(1, 1, 1)
+	TextButton.TextSize = 14
+
+	local Player   = game:GetService('Players').LocalPlayer
+	local Mouse    = Player:GetMouse()
+
+	local AutoRun  = true
+	local AirTP    = true
+	local Keybind  = 'i'
+
+	local Green    = Color3.fromRGB(53, 255, 100)
+	local Red      = Color3.fromRGB(255, 58, 58)
+
+	local function CheckRig()
+		if Player.Character then
+			local Humanoid = Player.Character:WaitForChild('Humanoid')
+			if Humanoid.RigType == Enum.HumanoidRigType.R15 then
+				return 'R15'
+			else
+				return 'R6'
+			end
+		end
+	end
+
+	local function InitiateInvis()
+		local Character = Player.Character
+		local StoredCF = Character.PrimaryPart.CFrame
+		if AirTP then
+			local Part = Instance.new('Part',workspace)
+			Part.Size = Vector3.new(5,0,5)
+			Part.Anchored = true
+			Part.CFrame = CFrame.new(Vector3.new(9999,9999,9999))
+			Character.PrimaryPart.CFrame = Part.CFrame*CFrame.new(0,3,0)
+			spawn(function()
+				wait(3)
+				Part:Destroy()
+			end)
+		end
+		if CheckRig() == 'R6' then
+			local Clone = Character.HumanoidRootPart:Clone()
+			Character.HumanoidRootPart:Destroy()
+			Clone.Parent = Character
+		else
+			local Clone = Character.LowerTorso.Root:Clone()
+			Character.LowerTorso.Root:Destroy()
+			Clone.Parent = Character.LowerTorso
+		end
+		if AirTP then
+			wait(1)
+			Character.PrimaryPart.CFrame = StoredCF
+		end
+	end
+
+	local function OnCharacterAdded()
+		SubFrame.Rigtype.Text = ('Your Rigtype - %s'):format(CheckRig())
+		if AutoRun then
+			InitiateInvis()
+		end
+	end
+
+	local function OnButtonPress(Button)
+		if Button == Keybind:lower() then
+			InitiateInvis()
+		end
+	end
+
+	local function OnGoInvisPress()
+		InitiateInvis()
+	end
+
+	local function OnKeyBindTextChange()
+		local cb = SubFrame.Keybind.CurrentBind
+		if cb.Text:match('%w') then
+			Keybind = cb.Text:match('%w'):lower()
+			cb.Text = Keybind
+		elseif cb.Text ~= '' then
+			Keybind = 'i'
+			cb.Text = Keybind
+		end
+		print(Keybind)
+	end
+
+	local function OnAutoRunPress()
+		local Ar = SubFrame.AutoRun.BoolToggle
+		if AutoRun then
+			Ar.BackgroundColor3 = Red
+			Ar.Text = tostring(not AutoRun)
+			AutoRun = false
+		else
+			Ar.BackgroundColor3 = Green
+			Ar.Text = tostring(not AutoRun)
+			AutoRun = true
+		end
+	end
+
+	local function OnAirTPPress()
+		local ATP = SubFrame.AirTP.BoolToggle
+		if AirTP then
+			ATP.BackgroundColor3 = Red
+			ATP.Text = tostring(false)
+			AirTP = false
+		else
+			ATP.BackgroundColor3 = Green
+			ATP.Text = tostring(true)
+			AirTP = true
+		end
+	end
+
+	local function OnMinimizePress()
+		Main.Visible = false
+		GUI.TextButton.Visible = true
+	end
+
+	local function OnOpenPress()
+		Main.Visible = true
+		GUI.TextButton.Visible = false
+	end
+
+	local function OnClosePress()
+		GUI:Destroy()
+	end
+
+	SubFrame.Keybind.CurrentBind:GetPropertyChangedSignal('Text'):connect(OnKeyBindTextChange)
+	Mouse.KeyDown:connect(OnButtonPress)
+	SubFrame.AutoRun.BoolToggle.MouseButton1Down:connect(OnAutoRunPress)
+	SubFrame.AirTP.BoolToggle.MouseButton1Down:connect(OnAirTPPress)
+	Main.Topbar.Minimize.MouseButton1Down:connect(OnMinimizePress)
+	GUI.TextButton.MouseButton1Down:connect(OnOpenPress)
+	Main.Topbar.Exit.MouseButton1Down:connect(OnClosePress)
+	SubFrame.QuickInvis.MouseButton1Down:connect(OnGoInvisPress)
+	Player.CharacterAdded:connect(OnCharacterAdded)
+
+	SubFrame.Rigtype.Text = ('Your Rigtype - %s'):format(CheckRig())
+end)
+
+ADMINCMDS.Name = "ADMIN CMDS"
+ADMINCMDS.Parent = Main
+ADMINCMDS.BackgroundColor3 = Color3.fromRGB(141, 141, 141)
+ADMINCMDS.BackgroundTransparency = 0.950
+ADMINCMDS.Position = UDim2.new(0.0190930795, 0, 0.551220298, 0)
+ADMINCMDS.Size = UDim2.new(0, 94, 0, 30)
+ADMINCMDS.Font = Enum.Font.GothamBold
+ADMINCMDS.Text = "ADMIN"
+ADMINCMDS.TextColor3 = Color3.fromRGB(227, 227, 227)
+ADMINCMDS.TextSize = 17.000
+ADMINCMDS.TextStrokeColor3 = Color3.fromRGB(40, 40, 40)
+ADMINCMDS.TextStrokeTransparency = 0.930
+ADMINCMDS.MouseButton1Down:connect(function()
+	loadstring(game:HttpGet(('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'),true))()
+end)
+
+TELEPORT.Name = "TELEPORT"
+TELEPORT.Parent = Main
+TELEPORT.BackgroundColor3 = Color3.fromRGB(141, 141, 141)
+TELEPORT.BackgroundTransparency = 0.950
+TELEPORT.Position = UDim2.new(0.0190930795, 0, 0.698702335, 0)
+TELEPORT.Size = UDim2.new(0, 94, 0, 30)
+TELEPORT.Font = Enum.Font.GothamBold
+TELEPORT.Text = "TELEPORT"
+TELEPORT.TextColor3 = Color3.fromRGB(227, 227, 227)
+TELEPORT.TextSize = 17.000
+TELEPORT.TextStrokeColor3 = Color3.fromRGB(40, 40, 40)
+TELEPORT.TextStrokeTransparency = 0.930
+
+ANTIRAGDOLL.Name = "ANTI RAGDOLL"
+ANTIRAGDOLL.Parent = Main
+ANTIRAGDOLL.BackgroundColor3 = Color3.fromRGB(141, 141, 141)
+ANTIRAGDOLL.BackgroundTransparency = 0.950
+ANTIRAGDOLL.Position = UDim2.new(0.298898339, 0, 0.12626642, 0)
+ANTIRAGDOLL.Size = UDim2.new(0, 142, 0, 30)
+ANTIRAGDOLL.Font = Enum.Font.GothamBold
+ANTIRAGDOLL.Text = "ANTI RAGDOLL"
+ANTIRAGDOLL.TextColor3 = Color3.fromRGB(227, 227, 227)
+ANTIRAGDOLL.TextSize = 19.000
+ANTIRAGDOLL.TextStrokeColor3 = Color3.fromRGB(40, 40, 40)
+ANTIRAGDOLL.TextStrokeTransparency = 0.930
+ANTIRAGDOLL.MouseButton1Down:connect(function()
+	spawn(function()
+		while game:GetService("RunService").Heartbeat:Wait() do
+			local chr = game.Players.LocalPlayer.Character
+
+			for _,v in pairs(chr:GetChildren()) do
+				if v:IsA("BallSocketConstraint") or v:IsA("Ragdoll fall-starterCharacterSripts") or v.Name == "RagdollMe" or v.Name == "StartRagdoll" or v.Name == "Pushed" or v.Name == "FirstPerson" or v.Name == "Falling down" then
+					v:Destroy()
+				end
+			end
+		end
+	end)
+end)
+
+FLINGPUSH.Name = "FLING PUSH"
+FLINGPUSH.Parent = Main
+FLINGPUSH.BackgroundColor3 = Color3.fromRGB(141, 141, 141)
+FLINGPUSH.BackgroundTransparency = 0.950
+FLINGPUSH.Position = UDim2.new(0.298898339, 0, 0.262957066, 0)
+FLINGPUSH.Size = UDim2.new(0, 142, 0, 30)
+FLINGPUSH.Font = Enum.Font.GothamBold
+FLINGPUSH.Text = "FLING PUSH"
+FLINGPUSH.TextColor3 = Color3.fromRGB(227, 227, 227)
+FLINGPUSH.TextSize = 19.000
+FLINGPUSH.TextStrokeColor3 = Color3.fromRGB(40, 40, 40)
+FLINGPUSH.TextStrokeTransparency = 0.930
+
+SPEEDPOWER.Name = "SPEED POWER"
+SPEEDPOWER.Parent = Main
+SPEEDPOWER.BackgroundColor3 = Color3.fromRGB(141, 141, 141)
+SPEEDPOWER.BackgroundTransparency = 0.950
+SPEEDPOWER.Position = UDim2.new(0.744153917, 0, 0.126266435, 0)
+SPEEDPOWER.Size = UDim2.new(0, 94, 0, 30)
+SPEEDPOWER.Font = Enum.Font.GothamBold
+SPEEDPOWER.Text = "SPEED POWER"
+SPEEDPOWER.TextColor3 = Color3.fromRGB(227, 227, 227)
+SPEEDPOWER.TextSize = 12.000
+SPEEDPOWER.TextStrokeColor3 = Color3.fromRGB(40, 40, 40)
+SPEEDPOWER.TextStrokeTransparency = 0.930
+SPEEDPOWER.MouseButton1Down:connect(function()
+	game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 110
+end)
+
+JUMPPOWER.Name = "JUMP POWER"
+JUMPPOWER.Parent = Main
+JUMPPOWER.BackgroundColor3 = Color3.fromRGB(141, 141, 141)
+JUMPPOWER.BackgroundTransparency = 0.950
+JUMPPOWER.Position = UDim2.new(0.744153917, 0, 0.259359956, 0)
+JUMPPOWER.Size = UDim2.new(0, 94, 0, 30)
+JUMPPOWER.Font = Enum.Font.GothamBold
+JUMPPOWER.Text = "JUMP POWER"
+JUMPPOWER.TextColor3 = Color3.fromRGB(227, 227, 227)
+JUMPPOWER.TextSize = 12.000
+JUMPPOWER.TextStrokeColor3 = Color3.fromRGB(40, 40, 40)
+JUMPPOWER.TextStrokeTransparency = 0.930
+JUMPPOWER.MouseButton1Down:connect(function()
+	game.Players.LocalPlayer.Character.Humanoid.JumpPower = 110
+end)
+
+Soon.Name = "Soon"
+Soon.Parent = Main
+Soon.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Soon.BackgroundTransparency = 0.750
+Soon.BorderColor3 = Color3.fromRGB(54, 54, 54)
+Soon.BorderSizePixel = 3
+Soon.Position = UDim2.new(0.277372271, 0, 0.402877688, 0)
+Soon.Size = UDim2.new(0, 285, 0, 112)
